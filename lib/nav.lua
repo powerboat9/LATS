@@ -1,7 +1,12 @@
 local pos = vector.new()
 local rot = 0
 
-function getRotVector()
+local shortenText(txt, length)
+    local shortened = #txt > 8
+    return (txt:sub(1, (shortened and 8) or -1) .. ((shortened and "...") or "")):replace(" ", "_")
+end
+
+local getRotVector = function()
     return ({
         vector.new(1, 0, 0),
         vector.new(0, 0, 1),
@@ -9,9 +14,6 @@ function getRotVector()
         vector.new(0, 0, -1)
     })[rot + 1]
 end
-
-local wood = {}
-local leafs = {}
 
 function right()
     turtle.turnRight()
@@ -54,3 +56,39 @@ function back()
     end
     return false
 end
+
+local maps = {}
+
+function newMaps(...)
+    for k, name in args do
+        if maps[name] then
+            printError("[WARN] Overriding Map " .. shortenText(name, 8))
+        end
+        maps[name] = {}
+    end
+end
+
+function removeMaps(...)
+    for k, name in args do
+        maps[name] = nil
+    end
+end
+
+function insertPoint(mapName, pointName, pointX, pointY, pointZ)
+    local pointPos = vector.new(pointX, pointY, pointZ)
+    
+    local index = #maps[name] + 1
+    
+    if maps[name].dict[pointName] then
+        printError("[WARN] Overriding Point " .. shortenText(pointName, 8) .. " on map " .. shortenText(name, 8))
+        index = maps[name].dict[pointName]
+    end
+    maps[name].points[index] = {
+        ["name"] = pointName,
+        ["pos"] = pointPos
+    }
+    maps[name].dict[pointName] = index
+end
+
+function removePoint(mapName, pointName)
+    
