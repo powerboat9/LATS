@@ -64,7 +64,11 @@ function newMaps(...)
         if maps[name] then
             printError("[WARN] Overriding Map " .. shortenText(name, 8))
         end
-        maps[name] = {}
+        maps[name] = {
+            ["dict"] = {},
+            ["points"] = {},
+            ["nextIndex"] = 1
+        }
     end
 end
 
@@ -77,18 +81,23 @@ end
 function insertPoint(mapName, pointName, pointX, pointY, pointZ)
     local pointPos = vector.new(pointX, pointY, pointZ)
     
-    local index = #maps[name] + 1
+    local index = maps[mapName].nextIndex
     
-    if maps[name].dict[pointName] then
+    if maps[mapName].dict[pointName] then
         printError("[WARN] Overriding Point " .. shortenText(pointName, 8) .. " on map " .. shortenText(name, 8))
         index = maps[name].dict[pointName]
+    else
+        while 
+        maps[mapName].nextIndex = index + 1
     end
-    maps[name].points[index] = {
+    maps[mapName].points[index] = {
         ["name"] = pointName,
         ["pos"] = pointPos
     }
-    maps[name].dict[pointName] = index
+    maps[mapName].dict[pointName] = index
 end
 
 function removePoint(mapName, pointName)
+    maps[mapName].points[(maps[mapName].dict[pointName])] = nil
+    maps[mapName].dict[pointName] = nil
     
