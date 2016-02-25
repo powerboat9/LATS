@@ -98,6 +98,11 @@ function insertPoint(mapName, pointName, pointX, pointY, pointZ)
 end
 
 function removePoint(mapName, pointName)
-    maps[mapName].points[(maps[mapName].dict[pointName])] = nil
+    local index = maps[mapName].dict[pointName]
+    maps[mapName].points[index] = nil
     maps[mapName].dict[pointName] = nil
+    if maps[mapName].nextIndex > index then
+        maps[mapName].nextIndex = index
+    end
+end
     
